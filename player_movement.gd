@@ -1,36 +1,36 @@
 extends CharacterBody3D
 
-# How fast the player moves in meters per second.
+# how fast the player moves
 @export var speed = 14
-# The downward acceleration when in the air, in meters per second squared.
+# the downward acceleration when in the air
 @export var fall_acceleration = 75
 @export var jump_acceleration = 20
+var mouse_sensitivity = 0.002
 
 var target_velocity = Vector3.ZERO
 
 
 func _physics_process(delta):
-	var direction = Vector3.ZERO
-
-	if Input.is_action_pressed("Right"):
-		direction.x += 1
-	if Input.is_action_pressed("Left"):
-		direction.x -= 1
-	if Input.is_action_pressed("Backwards"):
-		direction.z += 1
-	if Input.is_action_pressed("Forwards"):
-		direction.z -= 1
+	var input = Input.get_vector("Left","Right","Forwards","Backwards")
+	var direction = transform.basis * Vector3(input.x,0.0,input.y)
+	
 	if is_on_floor() and Input.is_action_pressed("Jump"):
 		target_velocity.y = jump_acceleration
 
-	# Ground Velocity
+	# ground Velocity
 	target_velocity.x = direction.x * speed
 	target_velocity.z = direction.z * speed
 
-	# Vertical Velocity
-	if not is_on_floor(): # If in the air, fall towards the floor. Literally gravity
+	# vertical Velocity
+	if not is_on_floor(): # If in the air, fall towards the floor
 		target_velocity.y = target_velocity.y - (fall_acceleration * delta)
 
-	# Moving the Character
+	# coving the Character
 	velocity = target_velocity
 	move_and_slide()
+	
+func _input(event):
+	# camera
+	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		rotate_y(-event.relative.x * mouse_sensitivity)
+		#rotate_x(-event.relative.y * mouse_sensitivity)
