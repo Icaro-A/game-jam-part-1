@@ -9,8 +9,9 @@ var mouse_sensitivity = 0.002
 
 var target_velocity = Vector3.ZERO
 
-#movement
 func _physics_process(delta):
+	
+	#movement
 	var input = Input.get_vector("Left","Right","Forwards","Backwards")
 	var direction = transform.basis * Vector3(input.x,0.0,input.y)
 	
@@ -34,11 +35,20 @@ func _physics_process(delta):
 	# moving the character
 	velocity = target_velocity
 	move_and_slide()
-# camera
+	
 func _input(event):
+	# camera
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		#side-to-side
+		# side-to-side
 		rotate_y(-event.relative.x * mouse_sensitivity)
-		#up and down
+		# up and down
 		$CameraFirstPerson/Camera3D.rotate_x(-event.relative.y * mouse_sensitivity)
 		$CameraFirstPerson/Camera3D.rotation.x = clampf($CameraFirstPerson/Camera3D.rotation.x,-deg_to_rad(70),deg_to_rad(70))
+
+func _process(delta):
+	if !is_on_floor() and Input.is_action_pressed("Gravity Hold"):
+		fall_acceleration = 10
+	else: if !is_on_floor() and Input.is_action_pressed("Gravity Fall"):
+		fall_acceleration = 500
+	else: fall_acceleration = 75
+		

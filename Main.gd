@@ -5,7 +5,7 @@ func _ready() -> void:
 	
 func _process(delta):
 	
-	# make screen maximized when not already
+	# make window maximized when F pressed and not already maximized
 	if DisplayServer.window_get_mode() != DisplayServer.WINDOW_MODE_MAXIMIZED and Input.is_action_pressed("Fullscreen"):
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
 	else: if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_MAXIMIZED and Input.is_action_pressed("Fullscreen"):
